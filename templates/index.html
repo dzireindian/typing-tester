@@ -1,0 +1,88 @@
+{%extends "base.html"%}
+
+{%block body%}
+
+{% with messages = get_flashed_messages() %}
+         {% if messages %}
+         <br></br>
+            <ul>
+               {% for message in messages %}
+               <li>{{ message }}</li>
+               {% endfor %}
+            </ul>
+         {% endif %}
+{% endwith %}
+<div class="card">
+  <form class="position-relative" action="{{url_for('registration')}}" id="myForm" name="myForm" method="post">
+    <div class="mb-3">
+      <input type="text" class="form-control" id="formGroupExampleInput" name="user" placeholder="User Name">
+    </div>
+    <div class="mb-3">
+      <input type="text" class="form-control" id="formGroupExampleInput2" name="email" placeholder="Email">
+      <p id="mail-log" class="text-danger"></p>
+    </div>
+    <div class="mb-3">
+      <input type="password" class="form-control" id="formGroupExampleInput2" name="password" placeholder="Password">
+      <p id="password-log" class="text-danger"></p>
+    </div>
+    <div class="mb-3">
+      <input type="password" class="form-control" id="formGroupExampleInput2" name="cpassword" placeholder="Confirm Password">
+    </div><p class="text-center"><a class="link-primary" href="{{url_for('loginpage')}}">Login</a></p>
+    <br>
+    <button id="register" name="register" value="Submit" type="submit" value="register" class="btn btn-primary btn-block">Register</button>
+  </form>
+</div>
+
+<script>
+  document.getElementById('register').addEventListener('click', e =>{
+  let mail = document.forms["myForm"]["email"].value;
+  let pwrd = document.forms["myForm"]["password"].value;
+  let cpwrd = document.forms["myForm"]["cpassword"].value;
+  let passw = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&.])[A-Za-z\d$@$!%*?&.]{6, 20}/;
+  let cmail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+
+  var m = 0;
+console.log(cmail.test(mail));
+  if (!cmail.test(mail)) {
+    // console.log(mail);
+    // alert(mail)
+    document.getElementById('mail-log').innerHTML = "Enter a valid email";
+    m = 1;
+  }
+  else {
+    document.getElementById('mail-log').innerHTML = "";
+  }
+
+
+console.log(passw.test(pwrd));
+if (pwrd.match(/[a-z]/g) && pwrd.match(/[A-Z]/g) && pwrd.match(/[0-9]/g) && pwrd.match(/[^a-zA-Z\d]/g) && pwrd.length >= 6)
+{
+  document.getElementById('password-log').innerHTML = "";
+  console.log(false);
+}
+else
+{
+  document.getElementById("password-log").innerHTML = "Password should contain atleast one [A-Z],[a-z],[1-0],special characters.";
+  m=1;
+  console.log(true);
+}
+
+if(pwrd !== cpwrd){
+  m = 1
+  alert('Entered password and confirmation password is not matching');
+}
+
+  if(m==1)
+  {
+    // console.log(m);
+    // alert(m)
+    e.preventDefault();
+  }
+  else {
+    return true;
+  }
+
+});
+</script>
+
+{%endblock%}

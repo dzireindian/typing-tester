@@ -1,0 +1,114 @@
+{%extends "base.html"%}
+{%block body%}
+<div style="display: none;" id="set">{{sentence}}</div>
+<div style="display: none;" id="set_len">{{length}}</div>
+<div class="container">
+  <div class="row">
+    <div id="cr" class="col-sm hit">
+      
+    </div>
+    <div id="wr" class="col-sm flop">
+      
+    </div>
+  </div>
+</div>
+<class class="card">
+    <h5 id="timer" class="card-header"></h5>
+    <div id ="sentence" class="card-body">
+      <!-- <p id="sentence"></p> -->
+    </div>
+  </div>
+  <script>
+    let size = 0;
+    // const sentence = document.getElementById('sentence').innerHTML;
+    // size = sentence.length;
+
+    var sentence = document.getElementById('set');
+    document.getElementById('sentence').innerHTML = sentence.innerHTML;
+    // var p = document.createElement('p');
+    // p.innerHTML = sentence;
+    // document.getElementById('sentence').appendChild(p);
+    let para = sentence.innerHTML;
+    sentence.innerHTML = "";
+
+    sentence = document.getElementById('set_len');
+    size = parseInt(sentence.innerHTML);
+    sentence.innerHTML = "";
+
+    sentence = para;
+
+    let mins = size;
+    mins = mins * 3;
+    var charpress = [];
+    var points = [];
+    var timeEnd = null;
+
+      var timerId = setInterval(function() {
+        if(mins === 0){
+          document.getElementById("timer").innerHTML = "00:00:00";
+          while(points.length < size){
+            charpress.push("");
+            points.push(0);
+          }
+          var obj = {char:charpress,hit:points};
+          console.log('game over condition');
+          timeEnd = obj;
+          obj = JSON.stringify(obj);
+          window.location = `/gameover/${obj}`;
+          clearInterval(timerId);
+        }
+        dateObj = new Date(mins * 1000);
+        hours = dateObj.getUTCHours();
+        minutes = dateObj.getUTCMinutes();
+        seconds = dateObj.getSeconds();
+        time = hours.toString().padStart(2, '0')
+                + ':' + minutes.toString().padStart(2, '0')
+                + ':' + seconds.toString().padStart(2, '0');
+        
+        document.getElementById("timer").innerHTML = time;
+        mins = mins - 1;
+        }, 1000);
+
+
+        // if(timeEnd !== null){
+        //   window.location = `/gameover/${timeEnd}`;
+        // }
+      var i = 0;
+      var cr = 0;
+      var wr = 0;
+
+      document.addEventListener('keypress', event => {
+        event = event || window.event;
+        var charCode = event.keyCode || event.which;
+        var charStr = String.fromCharCode(charCode);
+        console.log('key pressed =',charStr,", i = ",i);
+        charpress.push(charStr);
+        if(i==size){
+          while(points.length < size){
+            charpress.push("");
+            points.push(0);
+          }
+          var obj = {"char": charpress, "hit": points}
+          obj = JSON.stringify(obj);
+          window.location = `/gameover/${obj}`;
+        }
+        console.log('sentence word =',sentence[i],', pressed word =',charStr)
+        var hit = (sentence[i] === charStr);
+        hit?points.push(1):points.push(0);
+        i = i+1;
+
+        if(hit === true){
+          cr = cr + 1;
+          document.getElementById('cr').innerHTML = cr;
+          // document.getElementById("pe"+i.toString()).setAttribute("class","hit");
+        }
+        else{
+          wr = wr + 1;
+          document.getElementById('wr').innerHTML = wr;
+          // document.getElementById("pe"+i.toString()).setAttribute("class","flop");
+        }
+
+      });
+
+  </script>
+{%endblock%}

@@ -1,0 +1,17 @@
+{%extends "base.html"%}
+
+{%block body%}
+<div class="card">
+    <div class="card-header">
+      Game Setting
+    </div>
+    <div class="card-body">
+        <form action="{{url_for('game')}}" name="myform" method="get">
+            <label for="points">Points:</label>
+            <input type="number" id="points" name="points" step="1">
+            <br>
+            <button type="submit">Enter</button>
+        </form>
+    </div>
+  </div>
+{%endblock%}

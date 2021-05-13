@@ -1,0 +1,32 @@
+.hit{
+    color: greenyellow;
+}
+
+.flop{
+    color: red;
+}
+
+.card {
+    width: -webkit-fill-available;
+    height: fit-content;
+    /* margin-left: 40%; */
+    /* margin-right: 30%; */
+    margin-top: 20%;
+}
+
+.centered-form{
+	margin-top: 60px;
+    width:fit-content;
+}
+
+.card{
+    width:15rem;
+    height: 25rem;
+    margin-left: 40%;
+    margin-right: 30%;
+    margin-top: 20%;
+}
+
+.form-group{
+    margin-bottom: 10px;
+}

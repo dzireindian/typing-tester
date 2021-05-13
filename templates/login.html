@@ -1,0 +1,33 @@
+{%extends "base.html"%}
+
+{%block body%}
+
+{% with messages = get_flashed_messages() %}
+         {% if messages %}
+         <br></br>
+            <ul>
+               {% for message in messages %}
+               <li>{{ message }}</li>
+               {% endfor %}
+            </ul>
+         {% endif %}
+{% endwith %}
+
+<div class="card">
+    <form class="position-relative" action="{{url_for('login')}}" id="myForm" name="myForm" method="post">
+      <div class="mb-3">
+        <input type="text" class="form-control" id="formGroupExampleInput2" name="email" placeholder="Email">
+        <p id="mail-log" class="text-danger"></p>
+      </div>
+      <div class="mb-3">
+        <input type="password" class="form-control" id="formGroupExampleInput2" name="password" placeholder="Password">
+        <p id="password-log" class="text-danger"></p>
+      </div>
+      <p class="text-center"><a class="link-primary" href="{{url_for('/')}}">Register</a></p>
+    <br>
+      <br>
+      <button id="Login" name="Login" value="Submit" type="submit" value="Login" class="btn btn-primary btn-block">Login</button>
+    </form>
+  </div>
+
+{%endblock%}
