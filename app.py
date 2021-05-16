@@ -1,4 +1,4 @@
-from flask import Flask,render_template,request,session,redirect,url_for,flash
+from flask import Flask,render_template,request,session,redirect,url_for,flash,jsonify
 from flask_session import Session
 from datetime import datetime
 from essential_generators import DocumentGenerator
@@ -8,9 +8,13 @@ import pymongo
 import os
 import json
 import base64
+import copy
 
 import pandas as pd
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plot
+
 
 app = Flask(__name__)
 
@@ -30,6 +34,18 @@ cluster = pymongo.MongoClient(os.getenv("DATABASE_URL"))["type-tester"]
 
 @app.route("/")
 def index():
+    if session.get('email') != None:
+        return render_template('gameset.html',email = session['email'])
+
+    return render_template('index.html',email = None)
+
+@app.route("/tester/<string:email>")
+def testing(email):
+    session['email'] = email
+    return jsonify({"status":"success"}),200
+
+@app.route("/register")
+def register():
     if session.get('email') != None:
         return render_template('gameset.html',email = session['email'])
 
@@ -80,22 +96,23 @@ def login():
 @app.route("/game",methods=["POST","GET"])
 def game():
     gen = DocumentGenerator()
-    if session['email'] == None:
+    if session.get('email') == None:
         return render_template('index.html',email=None)
     points = request.args.get("points")
     points = int(points)
     print("Points =",points)
     buffer = gen.gen_sentence(max_words=points)
-    sentence = buffer
-    # sentence = ""
-    # i=0
-    # for b in buffer:
-    #     sentence += "<span id='pe"+str(i)+"'>"+b+"</span>"
-    #     i = i+1
-    return render_template('game.html',email=session['email'],sentence=sentence,length=len(buffer))
+    # sentence = buffer
+    sentence = ""
+    i=0
+    for b in buffer:
+        sentence += "<span id='pe"+str(i)+"'>"+b+"</span>"
+        i = i+1
+    return render_template('game.html',email=session['email'],sentence=sentence,length=len(buffer),bufferSentence=buffer)
 
-@app.route("/gameover/<object>",methods=["POST","GET"])
+@app.route("/gameover/<string:object>",methods=["POST","GET"])
 def gameover(object):
+    print("object =", object)
     object = json.loads(object)
     frame = pd.DataFrame(object)
 
@@ -105,41 +122,71 @@ def gameover(object):
     date_time = now.strftime("%Y-%m-%dT%H:%M:%S.000Z")
     date_time = datetime.strptime(date_time, "%Y-%m-%dT%H:%M:%S.000Z")
     db = cluster['scores']
-    db.insert_one({"email":session['email'],"total":max,"scored":score,"timestamp":date_time})
-    scores = db.find({"email":session['email']})
+    print("max =",max,", score =",score,", time stamp =",date_time)
+    db.insert_one({"email": session['email'], "total": int(max), "scored": int(score), "timestamp": date_time})
+    scores = db.find({"email": session['email']})
     if scores != None:
         scores = list(scores)
         scores = pd.DataFrame(scores)
     else:
-        scores = pd.DataFrame([["NA",0,0,date_time]],columns=["email","total","scored","timestamp"])
+        scores = pd.DataFrame([["NA", 0, 0, date_time]], columns=["email", "total", "scored", "timestamp"])
 
+    scores = scores.sort_values(by='timestamp', ascending=False)
     scores = scores.head(10)
-    scores = scores.sort_values(by='timestamp',ascending=True)
+    print(scores)
 
     maximums = scores['total'].tolist()
     scored = scores['scored'].tolist()
     times = scores['timestamp'].tolist()
-    plt = plot
-    fig, ax = plt.subplots(figsize=(9, 4))
-    style = dict(size=10, color='black')
-    plt.fill_between(maximums, scored, capstyle='round', joinstyle='round')
-    for i in range(len(scored)):
-        ax.text(maximums[i], scored[i], times[i], **style)
-    ax.set(title=' total vs scored', xlabel='total',
-           ylabel='scored')
-    
-    data = 'data:image/png;base64,'+image_data(plt)
+    plt = copymodule(plot)
+    print("address of plt 1",hex(id(plt)))
+    # plt = plot
+    print("total =",maximums)
+    print("score =",scored)
+    x_pos = [i for i, _ in enumerate(maximums)]
+    plt.bar(x_pos,scored)
+    plt.xticks(x_pos, maximums)
+    plt.xlabel('Total')
+    plt.ylabel("Scored")
+    # plt.show();
+    data = 'data:image/png;base64,' + image_data(plt)
 
+    frame = frame[(frame['char'] != "")]
     uni = frame['char'].unique()
-    x,y = [], []
+
+    char,total,scored = [],[],[]
     for un in uni:
-        total = frame[(frame['char'] == un)].sum()
-        x.append(un)
-        y.append(total)
-    plt.bar(x,y)
-    cdata = 'data:image/png;base64,'+image_data(plt)
+        tot = len(frame[(frame['char'] == un)])
+        sc= frame[(frame['char'] == un)]['hit'].sum()
+        char.append(un);
+        total.append(tot)
+        scored.append(sc)
+    d = {"char":char,"total":total,"scored":scored}
+    d = pd.DataFrame(d)
+    d.sort_values(by="scored")
+    char, score, total = d["char"].tolist(),d["scored"].tolist(),d["total"].tolist()
+    cplt = copymodule(plot)
+    print("address of plt 2",hex(id(cplt)))
+    # cplt = plot
+    print("total =",total)
+    print("score =",score)
+    x_pos = [i for i, _ in enumerate(total)]
+    cplt.bar(x_pos,score)
+    cplt.xticks(x_pos, total)
+    cplt.xlabel('Total')
+    cplt.ylabel("Scored")
+
+    for i in range(len(score)):
+        cplt.annotate(char[i], xy=(total[i],score[i]), ha='center', va='bottom')
+    # cplt.show()
+    cdata = 'data:image/png;base64,' + image_data(cplt)
 
     return render_template('gameover.html',email=session['email'],games=data,data=cdata)
+
+def copymodule(old):
+    new = type(old)(old.__name__, old.__doc__)
+    new.__dict__.update(old.__dict__)
+    return new
 
 def image_data(plt):
     buf = BytesIO()

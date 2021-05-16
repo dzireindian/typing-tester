@@ -10,8 +10,18 @@
             <label for="points">Points:</label>
             <input type="number" id="points" name="points" step="1">
             <br>
-            <button type="submit">Enter</button>
+            <button id="set" type="submit">Enter</button>
         </form>
     </div>
   </div>
+  <script>
+    document.getElementById('set').addEventListener('click', e =>{
+        let val = document.getElementById('points').value;
+        val = parseInt(val);
+        if(val < 3){
+          alert("value must be greater than or equal to 3");
+          event.preventDefault();
+        }
+    });
+  </script>
 {%endblock%}

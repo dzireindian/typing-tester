@@ -2,6 +2,17 @@
 {%block body%}
 <div style="display: none;" id="set">{{sentence}}</div>
 <div style="display: none;" id="set_len">{{length}}</div>
+<div style="display: none;" id="buff">{{bufferSentence}}</div>
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <button id="quit" type="button" class="btn btn-primary">Quit</button>
+    </div>
+    <div class="col">
+      <button id="restart" type="button" class="btn btn-primary">Restart</button>
+    </div>
+  </div>
+</div>
 <div class="container">
   <div class="row">
     <div id="cr" class="col-sm hit">
@@ -24,18 +35,22 @@
     // size = sentence.length;
 
     var sentence = document.getElementById('set');
-    document.getElementById('sentence').innerHTML = sentence.innerHTML;
+    // var doc = new DOMParser().parseFromString(sentence.innerHTML, "text/xml");
+    document.getElementById('sentence').insertAdjacentHTML("afterbegin",sentence.innerText);
+    // document.getElementById('sentence').innerHTML = sentence.innerHTML;
     // var p = document.createElement('p');
     // p.innerHTML = sentence;
     // document.getElementById('sentence').appendChild(p);
-    let para = sentence.innerHTML;
     sentence.innerHTML = "";
 
     sentence = document.getElementById('set_len');
     size = parseInt(sentence.innerHTML);
     sentence.innerHTML = "";
-
-    sentence = para;
+    console.log("sentence size = ",size)
+    let para = document.getElementById('buff');
+    sentence = para.innerText;
+    para.innerHTML = "";
+    console.log('sentence = ',sentence);
 
     let mins = size;
     mins = mins * 3;
@@ -83,7 +98,22 @@
         var charStr = String.fromCharCode(charCode);
         console.log('key pressed =',charStr,", i = ",i);
         charpress.push(charStr);
-        if(i==size){
+        console.log('sentence word =',sentence[i],', pressed word =',charStr)
+        var hit = (sentence[i] === charStr);
+        hit?points.push(1):points.push(0);
+
+        if(hit === true){
+          cr = cr + 1;
+          document.getElementById('cr').innerHTML = cr;
+          document.getElementById("pe"+i.toString()).setAttribute("class","hit");
+        }
+        else{
+          wr = wr + 1;
+          document.getElementById('wr').innerHTML = wr;
+          document.getElementById("pe"+i.toString()).setAttribute("class","flop");
+        }
+
+        if(i+1 === size){
           while(points.length < size){
             charpress.push("");
             points.push(0);
@@ -92,22 +122,23 @@
           obj = JSON.stringify(obj);
           window.location = `/gameover/${obj}`;
         }
-        console.log('sentence word =',sentence[i],', pressed word =',charStr)
-        var hit = (sentence[i] === charStr);
-        hit?points.push(1):points.push(0);
+
         i = i+1;
 
-        if(hit === true){
-          cr = cr + 1;
-          document.getElementById('cr').innerHTML = cr;
-          // document.getElementById("pe"+i.toString()).setAttribute("class","hit");
-        }
-        else{
-          wr = wr + 1;
-          document.getElementById('wr').innerHTML = wr;
-          // document.getElementById("pe"+i.toString()).setAttribute("class","flop");
-        }
+      });
 
+      document.getElementById('quit').addEventListener('click', e =>{
+        while(points.length < size){
+            charpress.push("");
+            points.push(0);
+          }
+          var obj = {"char": charpress, "hit": points}
+          obj = JSON.stringify(obj);
+          window.location = `/gameover/${obj}`;
+      });
+
+      document.getElementById('restart').addEventListener('click', e =>{
+        location.reload(false);
       });
 
   </script>
