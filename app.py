@@ -148,6 +148,10 @@ def gameover(object):
     plt.xticks(x_pos, maximums)
     plt.xlabel('Total')
     plt.ylabel("Scored")
+
+    for i in range(len(maximums)):
+        plt.annotate(i+1, xy=(x_pos[i],scored[i]), ha='center', va='bottom')
+    
     # plt.show();
     data = 'data:image/png;base64,' + image_data(plt)
 
@@ -158,7 +162,7 @@ def gameover(object):
     for un in uni:
         tot = len(frame[(frame['char'] == un)])
         sc= frame[(frame['char'] == un)]['hit'].sum()
-        char.append(un);
+        char.append(un)
         total.append(tot)
         scored.append(sc)
     d = {"char":char,"total":total,"scored":scored}
@@ -177,7 +181,7 @@ def gameover(object):
     cplt.ylabel("Scored")
 
     for i in range(len(score)):
-        cplt.annotate(char[i], xy=(total[i],score[i]), ha='center', va='bottom')
+        cplt.annotate(char[i], xy=(x_pos[i],score[i]), ha='center', va='bottom')
     # cplt.show()
     cdata = 'data:image/png;base64,' + image_data(cplt)
 
