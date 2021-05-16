@@ -139,6 +139,8 @@ def gameover(object):
     scored = scores['scored'].tolist()
     times = scores['timestamp'].tolist()
     plt = copymodule(plot)
+    # plt = copy.deepcopy(plot)
+    plt.figure()
     print("address of plt 1",hex(id(plt)))
     # plt = plot
     print("total =",maximums)
@@ -146,6 +148,7 @@ def gameover(object):
     x_pos = [i for i, _ in enumerate(maximums)]
     plt.bar(x_pos,scored)
     plt.xticks(x_pos, maximums)
+    plt.title('score of last ten games')
     plt.xlabel('Total')
     plt.ylabel("Scored")
 
@@ -170,6 +173,8 @@ def gameover(object):
     d.sort_values(by="scored")
     char, score, total = d["char"].tolist(),d["scored"].tolist(),d["total"].tolist()
     cplt = copymodule(plot)
+    # cplt = copy.deepcopy(plot)
+    cplt.figure()
     print("address of plt 2",hex(id(cplt)))
     # cplt = plot
     print("total =",total)
@@ -179,6 +184,7 @@ def gameover(object):
     cplt.xticks(x_pos, total)
     cplt.xlabel('Total')
     cplt.ylabel("Scored")
+    cplt.title('This game\'s result')
 
     for i in range(len(score)):
         cplt.annotate(char[i], xy=(x_pos[i],score[i]), ha='center', va='bottom')
