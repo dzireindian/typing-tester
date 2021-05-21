@@ -6,12 +6,13 @@
     color: red;
 }
 
-.card {
+body {
+    background-color: aliceblue;
+}
+
+.img-adjust {
     width: -webkit-fill-available;
-    height: fit-content;
-    /* margin-left: 40%; */
-    /* margin-right: 30%; */
-    margin-top: 20%;
+    height: 15rem;
 }
 
 .centered-form{
@@ -19,13 +20,46 @@
     width:fit-content;
 }
 
-.card{
-    width:15rem;
-    height: 25rem;
+.bt-adjust {
+    margin-top: 1%;
+    margin-bottom: 1%;
+}
+
+.game-adjust {
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+}
+
+button#set {
+    margin-left: 35%;
+    margin-right: 40%;
+}
+
+#points {
+    margin-bottom: 3%;
+    width: -webkit-fill-available;
+}
+
+.register{
+    height: 24rem;
     margin-left: 40%;
+    width: 15rem;
     margin-right: 30%;
     margin-top: 20%;
 }
+
+.login {
+    border-radius: 10px;
+    height: fit-content;
+    margin-left: 40%;
+    width:15rem;
+    margin-right: 30%;
+    margin-top: 20%;
+}
+
+/* .card{
+
+} */
 
 .form-group{
     margin-bottom: 10px;

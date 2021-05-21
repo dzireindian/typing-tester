@@ -4,11 +4,39 @@
     <meta charset="utf-8">
     <title>Typing test</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="{{url_for('static',filename='css/styles.css')}}">
   </head>
   <body>
-  <img src="..." class="img-fluid" alt="...">
+  <img src="https://onlinetyping.org/images/typing-test.jpg" class="img-fluid img-adjust" alt="...">
+  <nav class="navbar navbar-light bg-light">
+    <div class="container-fluid position-relative">
+      <a class="navbar-brand" href="{{url_for('gameset')}}"><i class="bi bi-house-fill"></i></a>
+      <p class="text-center position-absolute top-50 start-50 translate-middle fs-3 fw-bold">Type Speed Tester</p>
+      {% if email != None%}
+      <!-- <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-in-right" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M6 3.5a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 0-1 0v2A1.5 1.5 0 0 0 6.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-8A1.5 1.5 0 0 0 5 3.5v2a.5.5 0 0 0 1 0v-2z"/>
+        <path fill-rule="evenodd" d="M11.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H1.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
+      </svg> -->
+      <!-- <i id="out" class="bi bi-box-arrow-in-right"></i> -->
+      <!-- <div class="btn-group">
+        <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-three-dots-vertical"></i>
+        </button>
+        <ul class="dropdown-menu">
+          <li><a id="out" href="{{url_for('logout')}}" class="dropdown-item" href="#">Log Out</a></li>
+        </ul>
+      </div> -->
+      <button id="out" class="btn btn-light" type="submit">Logout</button>
+      {% endif %}
+    </div>
+  </nav>
 {%block body%}{%endblock%}
+<script>
+  document.getElementById('out').addEventListener('click', e =>{
+    window.location = "/logout"
+  });
+</script>
 <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
   </body>
 </html>

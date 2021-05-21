@@ -12,24 +12,27 @@
             </ul>
          {% endif %}
 {% endwith %}
-<div class="card">
+<div class="card shadow-lg p-3 mb-5 bg-body rounded register">
   <form class="position-relative" action="{{url_for('registration')}}" id="myForm" name="myForm" method="post">
-    <div class="mb-3">
-      <input type="text" class="form-control" id="formGroupExampleInput" name="user" placeholder="User Name">
+    <div class="d-flex flex-column bd-highlight">
+      <div class="p-2">
+        <input type="text" class="form-control" id="formGroupExampleInput" name="user" placeholder="User Name">
+      </div>
+      <div class="p-2">
+        <input type="text" class="form-control" id="formGroupExampleInput2" name="email" placeholder="Email">
+        <p id="mail-log" class="text-danger"></p>
+      </div>
+      <div class="p-2">
+        <input type="password" class="form-control" id="formGroupExampleInput2" name="password" placeholder="Password">
+        <p id="password-log" class="text-danger"></p>
+      </div>
+      <div class="p-2">
+        <input type="password" class="form-control" id="formGroupExampleInput2" name="cpassword" placeholder="Confirm Password">
+      </div><p class="text-center"><a class="link-primary" href="{{url_for('loginpage')}}">Login</a></p>
+      <div class="p-2">
+        <button class="btn btn-primary btn-block position-absolute top-100 start-50 translate-middle" id="register" name="register" value="Submit" type="submit" value="register">Register</button>
+      </div>
     </div>
-    <div class="mb-3">
-      <input type="text" class="form-control" id="formGroupExampleInput2" name="email" placeholder="Email">
-      <p id="mail-log" class="text-danger"></p>
-    </div>
-    <div class="mb-3">
-      <input type="password" class="form-control" id="formGroupExampleInput2" name="password" placeholder="Password">
-      <p id="password-log" class="text-danger"></p>
-    </div>
-    <div class="mb-3">
-      <input type="password" class="form-control" id="formGroupExampleInput2" name="cpassword" placeholder="Confirm Password">
-    </div><p class="text-center"><a class="link-primary" href="{{url_for('loginpage')}}">Login</a></p>
-    <br>
-    <button id="register" name="register" value="Submit" type="submit" value="register" class="btn btn-primary btn-block">Register</button>
   </form>
 </div>
 

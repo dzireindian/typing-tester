@@ -2,6 +2,7 @@ from flask import Flask,render_template,request,session,redirect,url_for,flash,j
 from flask_session import Session
 from datetime import datetime
 from essential_generators import DocumentGenerator
+# from simplecrypt import encrypt, decrypt
 from io import BytesIO
 
 import pymongo
@@ -30,7 +31,7 @@ app.config['SECRET_KEY'] = '#KR#'
 Session(app)
 
 cluster = pymongo.MongoClient(os.getenv("DATABASE_URL"))["type-tester"]
-
+crypt = os.getenv("CRYPT_CODE")
 
 @app.route("/")
 def index():
@@ -79,6 +80,17 @@ def loginpage():
 
     return render_template('login.html',email = None)
 
+@app.route("/gameset",methods=["GET","POST"])
+def gameset():
+    if session.get('email') == None:
+        return render_template('login.html',email = None)
+    return render_template('gameset.html',email = session['email'])
+
+@app.route("/logout",methods=["GET","POST"])
+def logout():
+    session.clear()
+    return redirect(url_for('loginpage'))
+
 @app.route("/login",methods=["POST"])
 def login():
     db = cluster['users']
@@ -88,7 +100,7 @@ def login():
 
     if user!=None and user['password'] == request.form.get("password"):
         session['email'] = mail
-        return render_template('gameset.html',email = None)
+        return render_template('gameset.html',email = session['email'])
 
     flash('Invalid credentials entered')
     return render_template('login.html',email = None)
@@ -110,8 +122,8 @@ def game():
         i = i+1
     return render_template('game.html',email=session['email'],sentence=sentence,length=len(buffer),bufferSentence=buffer)
 
-@app.route("/gameover/<string:object>",methods=["POST","GET"])
-def gameover(object):
+@app.route("/gameover/<string:sec>/<string:object>",methods=["POST","GET"])
+def gameover(sec,object):
     print("object =", object)
     object = json.loads(object)
     frame = pd.DataFrame(object)
@@ -122,22 +134,22 @@ def gameover(object):
     date_time = now.strftime("%Y-%m-%dT%H:%M:%S.000Z")
     date_time = datetime.strptime(date_time, "%Y-%m-%dT%H:%M:%S.000Z")
     db = cluster['scores']
-    print("max =",max,", score =",score,", time stamp =",date_time)
-    db.insert_one({"email": session['email'], "total": int(max), "scored": int(score), "timestamp": date_time})
-    scores = db.find({"email": session['email']})
+    print("max =",max,", score =",score,", time stamp =",sec)
+    db.insert_one({"email": session['email'], "total": int(max), "scored": int(score), "timestamp": date_time,"completion": sec+" sec"})
+    scores = db.find({"email": session['email']}).sort([('timestamp', -1)]).limit(10)  
     if scores != None:
         scores = list(scores)
         scores = pd.DataFrame(scores)
     else:
-        scores = pd.DataFrame([["NA", 0, 0, date_time]], columns=["email", "total", "scored", "timestamp"])
+        scores = pd.DataFrame([["NA", 0, 0, sec]], columns=["email", "total", "scored", "timestamp"])
 
-    scores = scores.sort_values(by='timestamp', ascending=False)
-    scores = scores.head(10)
+    # scores = scores.sort_values(by='timestamp', ascending=False)
+    # scores = scores.head(10)
     print(scores)
 
     maximums = scores['total'].tolist()
     scored = scores['scored'].tolist()
-    times = scores['timestamp'].tolist()
+    times = scores['completion'].tolist()
     plt = copymodule(plot)
     # plt = copy.deepcopy(plot)
     plt.figure()
@@ -153,7 +165,7 @@ def gameover(object):
     plt.ylabel("Scored")
 
     for i in range(len(maximums)):
-        plt.annotate(i+1, xy=(x_pos[i],scored[i]), ha='center', va='bottom')
+        plt.annotate(times[i], xy=(x_pos[i],scored[i]), ha='center', va='bottom')
     
     # plt.show();
     data = 'data:image/png;base64,' + image_data(plt)
@@ -191,7 +203,7 @@ def gameover(object):
     # cplt.show()
     cdata = 'data:image/png;base64,' + image_data(cplt)
 
-    return render_template('gameover.html',email=session['email'],games=data,data=cdata)
+    return render_template('gameover.html',email=session['email'],games=data,data=cdata,time=sec+" sec")
 
 def copymodule(old):
     new = type(old)(old.__name__, old.__doc__)

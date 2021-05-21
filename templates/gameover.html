@@ -1,5 +1,18 @@
 {%extends "base.html"%}
 {%block body%}
-<img src="{{games}}"></img>
-<img src="{{data}}"></img>
+<div class="container">
+
+<div class="row">
+    <div class="col"><p class="fs-1 text-center">Test completed in {{time}}</p></div>
+</div>
+<div class="row bt-adjust"><div class="col position-relative"><button id="retry" type="button" class="btn btn-primary position-absolute top-50 start-50 translate-middle">Retry</button></div></div>
+<div class="d-flex flex-row">
+    <div class="p-2"><img src="{{games}}"></img></div><div class="p-2"><img src="{{data}}"></img></div>
+</div>
+</div>
+<script>
+    document.getElementById("retry").addEventListener('click',e => {
+        window.location = '/gameset'
+    });
+</script>
 {%endblock%}

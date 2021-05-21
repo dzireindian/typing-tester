@@ -4,31 +4,37 @@
 <div style="display: none;" id="set_len">{{length}}</div>
 <div style="display: none;" id="buff">{{bufferSentence}}</div>
 <div class="container">
-  <div class="row">
-    <div class="col">
-      <button id="quit" type="button" class="btn btn-primary">Quit</button>
+  <div class="row game-adjust">
+    <div class="col position-relative">
+      <button id="quit" type="button" class="btn btn-primary position-absolute top-50 start-50 translate-middle">Quit</button>
     </div>
-    <div class="col">
-      <button id="restart" type="button" class="btn btn-primary">Restart</button>
+    <div class="col position-relative">
+      <button id="restart" type="button" class="btn btn-primary position-absolute top-50 start-50 translate-middle">Restart</button>
+    </div>
+  </div>
+  <div class="row game-adjust">
+    <div class="col-sm hit position-relative">
+      <div id="cr" class="fs-1 fw-bolder position-absolute top-50 start-50 translate-middle">
+
+      </div>
+    </div>
+    <div class="col-sm flop position-relative">
+      <div id="wr" class="fs-1 fw-bolder position-absolute top-50 start-50 translate-middle">
+
+      </div>
     </div>
   </div>
 </div>
 <div class="container">
-  <div class="row">
-    <div id="cr" class="col-sm hit">
-      
-    </div>
-    <div id="wr" class="col-sm flop">
-      
-    </div>
-  </div>
-</div>
-<class class="card">
+
+  <div class="card">
     <h5 id="timer" class="card-header"></h5>
     <div id ="sentence" class="card-body">
       <!-- <p id="sentence"></p> -->
     </div>
   </div>
+
+</div>
   <script>
     let size = 0;
     // const sentence = document.getElementById('sentence').innerHTML;
@@ -57,7 +63,7 @@
     var charpress = [];
     var points = [];
     var timeEnd = null;
-
+    var sec = 0;
       var timerId = setInterval(function() {
         if(mins === 0){
           document.getElementById("timer").innerHTML = "00:00:00";
@@ -69,7 +75,7 @@
           console.log('game over condition');
           timeEnd = obj;
           obj = JSON.stringify(obj);
-          window.location = `/gameover/${obj}`;
+          window.location = `/gameover/${sec}/${obj}`;
           clearInterval(timerId);
         }
         dateObj = new Date(mins * 1000);
@@ -82,6 +88,7 @@
         
         document.getElementById("timer").innerHTML = time;
         mins = mins - 1;
+        sec = sec + 1;
         }, 1000);
 
 
@@ -120,7 +127,7 @@
           }
           var obj = {"char": charpress, "hit": points}
           obj = JSON.stringify(obj);
-          window.location = `/gameover/${obj}`;
+          window.location = `/gameover/${sec}/${obj}`;
         }
 
         i = i+1;
@@ -134,7 +141,7 @@
           }
           var obj = {"char": charpress, "hit": points}
           obj = JSON.stringify(obj);
-          window.location = `/gameover/${obj}`;
+          window.location = `/gameover/${sec}/${obj}`;
       });
 
       document.getElementById('restart').addEventListener('click', e =>{

@@ -13,20 +13,21 @@
          {% endif %}
 {% endwith %}
 
-<div class="card">
+<div class="card shadow-lg p-3 mb-5 bg-body rounded login">
     <form class="position-relative" action="{{url_for('login')}}" id="myForm" name="myForm" method="post">
-      <div class="mb-3">
-        <input type="text" class="form-control" id="formGroupExampleInput2" name="email" placeholder="Email">
-        <p id="mail-log" class="text-danger"></p>
+      <div class="d-flex flex-column bd-highlight mb-3">
+        <div class="p-2">
+          <input type="text" class="form-control" id="formGroupExampleInput2" name="email" placeholder="Email">
+          <p id="mail-log" class="text-danger"></p>
+        </div>
+        <div class="p-2">
+          <input type="password" class="form-control" id="formGroupExampleInput2" name="password" placeholder="Password">
+          <p id="password-log" class="text-danger"></p>
+        </div>
+        <p class="text-center p-2 reg"><a class="link-primary" href="{{url_for('register')}}">Register</a></p>
+        <button id="Login" name="Login" value="Submit" type="submit" value="Login" class="btn btn-primary btn-block p-2 log">Login</button>
       </div>
-      <div class="mb-3">
-        <input type="password" class="form-control" id="formGroupExampleInput2" name="password" placeholder="Password">
-        <p id="password-log" class="text-danger"></p>
-      </div>
-      <p class="text-center"><a class="link-primary" href="{{url_for('register')}}">Register</a></p>
-    <br>
-      <br>
-      <button id="Login" name="Login" value="Submit" type="submit" value="Login" class="btn btn-primary btn-block">Login</button>
+      
     </form>
   </div>
 
